@@ -124,7 +124,7 @@ class BlockSounds extends PluginBase implements Listener {
         $sound->volume = 1;
         $sound->pitch = $pitch;
         $sound->soundName = $soundName;
-        $player->getNetworkSession()->sendDataPacket($sound);
+        $this->getServer()->broadcastPackets([$player], $sound);
     }
     
    
