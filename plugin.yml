@@ -1,18 +1,18 @@
 name: BlockSounds
 main: Xenophilicy\BlockSounds\BlockSounds
 version: 1.0.0
-author: Xenophilicy
-api: 3.0.0
+author: 
+  - Xenophilicy
+  - BeeAZ
+api: 4.0.0
 permissions:
   blocksound:
     default: op
-    children:
-      blocksound.use:
-        default: true
-      blocksound.command:
-        default: op
-        children:
-          blocksound.command.set:
-            default: op
-          blocksound.command.remove:
-            default: op
+  blocksound.use:
+    default: true
+  blocksound.command:
+    default: op
+  blocksound.command.set:
+    default: op
+  blocksound.command.remove:
+    default: op
