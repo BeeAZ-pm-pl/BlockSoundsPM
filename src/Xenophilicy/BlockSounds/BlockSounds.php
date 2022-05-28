@@ -20,7 +20,7 @@ use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
@@ -47,13 +47,13 @@ class BlockSounds extends PluginBase implements Listener {
         self::$sessions[$name] = [$mode, $args];
     }
     
-    public function onEnable(){
+    public function onEnable(): void{
         $this->saveResource("blocks.yml");
         $this->blocksConfig = new Config($this->getDataFolder() . "blocks.yml", Config::YAML);
         self::$blocks = $this->blocksConfig->getAll();
         self::$settings = $this->getConfig()->getAll();
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getCommandMap()->register("blocksound", new BlockSound("blocksound", $this));
+        $this->getServer()->getCommandMap()->register($this->getDescription()->getName(), new BlockSound("blocksoundspm", $this));
     }
     
     /**
@@ -69,11 +69,11 @@ class BlockSounds extends PluginBase implements Listener {
             $sound = $block[0];
             $pitch = $block[1];
             if(!$player->hasPermission("blocksound.use")) return;
-            $event->setCancelled();
+            $event->cancel();
             $this->playSound($sound, $player, $pitch);
             return;
         }
-        $event->setCancelled();
+        $event->cancel();
         $mode = self::$sessions[$player->getName()][0];
         $args = self::$sessions[$player->getName()][1];
         switch($mode){
@@ -141,13 +141,13 @@ class BlockSounds extends PluginBase implements Listener {
     public function playSound(string $soundName, Player $player, $pitch){
         if($pitch === "random") $pitch = mt_rand(self::$settings["random"]["min"], self::$settings["random"]["max"]);
         $sound = new PlaySoundPacket();
-        $sound->x = $player->getX();
-        $sound->y = $player->getY();
-        $sound->z = $player->getZ();
+        $sound->x = (int)$player->getPosition()->getX();
+        $sound->y = (int)$player->getPosition()->getY();
+        $sound->z = (int)$player->getPosition()->getZ();
         $sound->volume = 1;
         $sound->pitch = $pitch;
         $sound->soundName = $soundName;
-        $this->getServer()->broadcastPacket([$player], $sound);
+        $player->getNetworkSession()->sendDataPacket($sound);
     }
     
     /**
@@ -157,7 +157,7 @@ class BlockSounds extends PluginBase implements Listener {
      */
     private function createBlock(Block $block, string $soundName, $pitch): void{
         $b = $block;
-        $coords = $b->x . ":" . $b->y . ":" . $b->z . ":" . $b->getLevel()->getFolderName();
+        $coords = $b->x . ":" . $b->y . ":" . $b->z . ":" . $b->getWorld()->getFolderName();
         self::$blocks[$coords] = [$soundName, $pitch];
     }
     
@@ -167,13 +167,13 @@ class BlockSounds extends PluginBase implements Listener {
      */
     private function removeBlock(Block $block): bool{
         $b = $block;
-        $coords = $b->x . ":" . $b->y . ":" . $b->z . ":" . $b->getLevel()->getFolderName();
+        $coords = $b->x . ":" . $b->y . ":" . $b->z . ":" . $b->getWorld()->getFolderName();
         if(!isset(self::$blocks[$coords])) return false;
         unset(self::$blocks[$coords]);
         return true;
     }
     
-    public function onDisable(){
+    public function onDisable(): void{
         $this->blocksConfig->setAll(self::$blocks);
         $this->blocksConfig->save();
     }
