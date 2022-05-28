@@ -116,7 +116,7 @@ class BlockSounds extends PluginBase implements Listener {
     }
     
     public function playSound(string $soundName, Player $player, float $pitch){
-        if($pitch === "random") $pitch = mt_rand(self::$settings["random"]["min"], self::$settings["random"]["max"]);
+        if($pitch == "random") $pitch = mt_rand(self::$settings["random"]["min"], self::$settings["random"]["max"]);
         $sound = new PlaySoundPacket();
         $sound->x = (int)$player->getPosition()->getX();
         $sound->y = (int)$player->getPosition()->getY();
@@ -136,7 +136,7 @@ class BlockSounds extends PluginBase implements Listener {
    
     private function removeBlock(Block $block): bool{
         $b = $block;
-        $coords = $b->x . ":" . $b->y . ":" . $b->z . ":" . $b->getWorld()->getFolderName();
+        $coords = $b->getPosition()->x . ":" . $b->getPosition()->y . ":" . $b->getPosition()->z . ":" . $b->getPosition()->getWorld()->getFolderName();
         if(!isset(self::$blocks[$coords])) return false;
         unset(self::$blocks[$coords]);
         return true;
