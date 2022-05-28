@@ -26,10 +26,6 @@ use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat as TF;
 use Xenophilicy\BlockSounds\Command\BlockSound;
 
-/**
- * Class BlockSounds
- * @package blocksound
- */
 class BlockSounds extends PluginBase implements Listener {
     
     private static $blocks = [];
@@ -38,11 +34,6 @@ class BlockSounds extends PluginBase implements Listener {
     private static $settings;
     private $blocksConfig;
     
-    /**
-     * @param string $name
-     * @param string $mode
-     * @param array $args
-     */
     public static function setSession(string $name, string $mode, array $args = []){
         self::$sessions[$name] = [$mode, $args];
     }
@@ -55,10 +46,7 @@ class BlockSounds extends PluginBase implements Listener {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getServer()->getCommandMap()->register($this->getDescription()->getName(), new BlockSound("blocksoundspm", $this));
     }
-    
-    /**
-     * @param $event
-     */
+
     private function executeEventAction($event): void{
         $player = $event->getPlayer();
         $block = $event->getBlock();
@@ -112,33 +100,22 @@ class BlockSounds extends PluginBase implements Listener {
         $this->executeEventAction($event);
     }
     
-    /**
-     * @param string $player
-     * @return bool
-     */
+   
     private function isCooled(string $player): bool{
         if(isset(self::$cooldowns[$player]) && self::$cooldowns[$player] + 1 > time()) return false;
         self::$cooldowns[$player] = time();
         return true;
     }
     
-    /**
-     * @param Block $block
-     * @return array|null
-     */
+    
     private function getBlock(Block $block): ?array{
         $b = $block;
-        $coords = $b->x . ":" . $b->y . ":" . $b->z . ":" . $b->getLevel()->getFolderName();
+        $coords = $b->getPosition()->x . ":" . $b->getPosition()->y . ":" . $b->getPosition()->z . ":" . $b->getPosition()->getWorld()->getFolderName();
         if(!isset(self::$blocks[$coords])) return null;
         return self::$blocks[$coords];
     }
     
-    /**
-     * @param string $soundName
-     * @param Player $player
-     * @param float $pitch
-     */
-    public function playSound(string $soundName, Player $player, $pitch){
+    public function playSound(string $soundName, Player $player, float $pitch){
         if($pitch === "random") $pitch = mt_rand(self::$settings["random"]["min"], self::$settings["random"]["max"]);
         $sound = new PlaySoundPacket();
         $sound->x = (int)$player->getPosition()->getX();
@@ -150,21 +127,13 @@ class BlockSounds extends PluginBase implements Listener {
         $player->getNetworkSession()->sendDataPacket($sound);
     }
     
-    /**
-     * @param Block $block
-     * @param string $soundName
-     * @param float $pitch
-     */
+   
     private function createBlock(Block $block, string $soundName, $pitch): void{
         $b = $block;
-        $coords = $b->x . ":" . $b->y . ":" . $b->z . ":" . $b->getWorld()->getFolderName();
+        $coords = $b->getPosition()->x . ":" . $b->getPosition()->y . ":" . $b->getPosition()->z . ":" . $b->getPosition()->getWorld()->getFolderName();
         self::$blocks[$coords] = [$soundName, $pitch];
     }
-    
-    /**
-     * @param Block $block
-     * @return bool
-     */
+   
     private function removeBlock(Block $block): bool{
         $b = $block;
         $coords = $b->x . ":" . $b->y . ":" . $b->z . ":" . $b->getWorld()->getFolderName();
