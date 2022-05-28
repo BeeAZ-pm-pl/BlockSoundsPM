@@ -17,8 +17,7 @@ namespace Xenophilicy\BlockSounds\Command;
 
 use pocketmine\command\Command;
 use pocketmine\command\CommandSender;
-use pocketmine\command\PluginIdentifiableCommand;
-use pocketmine\Player;
+use pocketmine\player\Player;
 use pocketmine\plugin\Plugin;
 use pocketmine\utils\TextFormat as TF;
 use Xenophilicy\BlockSounds\BlockSounds;
@@ -27,7 +26,7 @@ use Xenophilicy\BlockSounds\BlockSounds;
  * Class BlockSound
  * @package Xenophilicy\BlockSounds\Command
  */
-class BlockSound extends Command implements PluginIdentifiableCommand {
+class BlockSound extends Command{
     
     private $plugin;
     
