@@ -50,7 +50,7 @@ class BlockSound extends Command{
             return false;
         }
         if(!isset($args[0])){
-            $sender->sendMessage(TF::RED . "Usage: /blocksound <set <sound> [pitch]|remove>");
+            $sender->sendMessage(TF::RED . "Usage: /blocksounds <set <sound> [pitch]|remove>");
             return false;
         }
         $mode = array_shift($args);
@@ -68,7 +68,7 @@ class BlockSound extends Command{
                 if(!$this->hasPermission($sender, "remove")) return false;
                 break;
             default:
-                $sender->sendMessage(TF::RED . "Usage: /blocksound <set <sound> [pitch]|remove>");
+                $sender->sendMessage(TF::RED . "Usage: /blocksounds <set <sound> [pitch]|remove>");
                 return false;
         }
         $sender->sendMessage(TF::GREEN . "Tap a block to apply action");
