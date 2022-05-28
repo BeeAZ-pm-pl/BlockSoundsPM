@@ -44,7 +44,7 @@ class BlockSounds extends PluginBase implements Listener {
         self::$blocks = $this->blocksConfig->getAll();
         self::$settings = $this->getConfig()->getAll();
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
-        $this->getServer()->getCommandMap()->register($this->getDescription()->getName(), new BlockSound("blocksoundspm", $this));
+        $this->getServer()->getCommandMap()->register($this->getDescription()->getName(), new BlockSound("blocksounds", $this));
     }
 
     private function executeEventAction($event): void{
