@@ -41,7 +41,7 @@ class BlockSound extends Command{
     }
     
     public function execute(CommandSender $sender, string $commandLabel, array $args): bool{
-        if(!$sender->hasPermission($this->getPermission())){
+        if(!$sender->hasPermission($this->getPermissions())){
             $sender->sendMessage(TF::RED . "You don't have permission to manage block sounds");
             return false;
         }
